@@ -1,206 +1,179 @@
-# Vobiz PHP SDK
+# Vobiz PHP Library
 
-The official PHP library for [Vobiz](https://vobiz.ai) — the AI-first voice and telephony API platform for builders. Use this SDK to seamlessly make and control calls, manage SIP trunks, provision phone numbers, run conferences, and capture recordings directly from your PHP application.
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=Vobiz%2FPHP)
+[![php shield](https://img.shields.io/badge/php-packagist-pink)](https://packagist.org/packages/vobiz/vobiz-php)
 
-[![Packagist](https://img.shields.io/badge/php-packagist-pink)](https://packagist.org/packages/vobiz/vobiz-php)
+The Vobiz PHP library provides convenient access to the Vobiz APIs from PHP.
 
-## Quick links
+## Table of Contents
 
-- **Documentation**: [https://docs.vobiz.ai](https://docs.vobiz.ai)
-- **Dashboard & Credentials**: [https://console.vobiz.ai](https://console.vobiz.ai)
-- **Full API Reference**: [`./reference.md`](./reference.md)
-
-## Features
-
-- **Call Control**: Initiate outbound calls, terminate active calls, and retrieve detailed Call Detail Records (CDRs).
-- **In-Call Interactive Controls**: Play audio files, convert text to speech (TTS), send DTMF tones, and stream raw call audio to WebSocket servers.
-- **Phone Number Management**: Search inventory, purchase numbers, and assign or unassign them to SIP trunks or sub-accounts.
-- **SIP Trunks & Endpoints**: Configure SIP trunks, manage credentials, set IP access control lists (ACLs), and provision SIP endpoints.
-- **Conferences**: Create and manage conference rooms, control participant audio (mute, deafen), and record conference sessions.
-- **Sub-Accounts & KYC**: Programmatically provision customer sub-accounts and manage KYC verifications (PAN, GSTIN, CIN, DigiLocker) with built-in test-mode mocks.
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Environments](#environments)
+- [Exception Handling](#exception-handling)
+- [Advanced](#advanced)
+  - [Custom Client](#custom-client)
+  - [Retries](#retries)
+  - [Timeouts](#timeouts)
+- [Contributing](#contributing)
 
 ## Requirements
 
-- PHP `^8.1` or higher.
-- The `ext-json` extension.
-- A [PSR-18](https://www.php-fig.org/psr/psr-18/) compatible HTTP client (e.g., Guzzle). The SDK uses `php-http/discovery` to auto-discover an installed client if you don't explicitly provide one.
+This SDK requires PHP ^8.1.
 
 ## Installation
-
-Install the package via Composer:
 
 ```sh
 composer require vobiz/vobiz-php
 ```
 
-## Authentication
+## Usage
 
-Vobiz authenticates requests using an **Auth ID** and an **Auth Token**. You can find these credentials in the [Vobiz Console](https://console.vobiz.ai). 
-
-We recommend storing your credentials in environment variables. Instantiate the `VobizClient` using the `apiKey` (which maps to your Auth ID) and `authToken` parameters. The SDK will automatically send them as the `X-Auth-ID` and `X-Auth-Token` HTTP headers.
+Instantiate and use the client with the following:
 
 ```php
 <?php
 
-require 'vendor/autoload.php';
-
-use Vobiz\VobizClient;
-
-$client = new VobizClient(
-    apiKey: getenv('VOBIZ_AUTH_ID'),     // Sent as X-Auth-ID
-    authToken: getenv('VOBIZ_AUTH_TOKEN')  // Sent as X-Auth-Token
-);
-```
-
-## Quickstart
-
-Here is a complete example of how to initiate an outbound call:
-
-```php
-<?php
-
-require 'vendor/autoload.php';
+namespace Example;
 
 use Vobiz\VobizClient;
 use Vobiz\Calls\Requests\MakeCallRequest;
 
-$authId = getenv('VOBIZ_AUTH_ID');
 $client = new VobizClient(
-    apiKey: $authId,
-    authToken: getenv('VOBIZ_AUTH_TOKEN'),
+    authToken: '<X-Auth-Token>',
+    apiKey: '<value>',
 );
-
-$response = $client->calls->makeCall(
-    $authId,
+$client->calls->makeCall(
+    'MA_XXXXXX',
     new MakeCallRequest([
         'from' => '14155551234',
         'to' => '+919876543210',
         'answerUrl' => 'https://example.com/answer',
         'answerMethod' => 'POST',
-    ])
+    ]),
 );
 
-print_r($response);
 ```
 
-## Common operations
+## Environments
 
-Below are common operations you can perform with the SDK. For the complete list of methods and parameters, see [`./reference.md`](./reference.md).
-
-### Terminate a live call
+This SDK allows you to configure different environments for API requests.
 
 ```php
-$client->liveCalls->hangupCall(
-    getenv('VOBIZ_AUTH_ID'),
-    'call_uuid_here'
-);
-```
-
-### Send DTMF tones
-
-Send keypad digits on an active call. Use `w` for a 0.5-second pause and `W` for a 1-second pause.
+The SDK defaults to the `Production` environment. To use a different environment, pass it to the client constructor:
 
 ```php
-use Vobiz\Dtmf\Requests\SendDtmfRequest;
-use Vobiz\Dtmf\Requests\SendDtmfRequestLeg;
+use Vobiz\VobizClient;
+use Vobiz\Environments;
 
-$client->dtmf->sendDtmf(
-    getenv('VOBIZ_AUTH_ID'),
-    'call_uuid_here',
-    new SendDtmfRequest([
-        'digits' => '1234#',
-        'leg' => SendDtmfRequestLeg::Aleg->value,
-    ])
+$client = new VobizClient(
+    token: '<YOUR_TOKEN>',
+    options: [
+        'baseUrl' => Environments::Staging->value
+    ]
 );
 ```
 
-### Purchase a phone number
-
-Purchase a phone number from the Vobiz inventory and assign it to your account.
-
-```php
-use Vobiz\PhoneNumbers\Requests\PurchaseFromInventoryRequest;
-
-$client->phoneNumbers->purchaseFromInventory(
-    getenv('VOBIZ_AUTH_ID'),
-    new PurchaseFromInventoryRequest([
-        'e164' => '+919876543210',
-        'currency' => 'USD',
-    ])
-);
+Available environments:
+- `Environments::Production`
 ```
 
-### List call recordings
+## Exception Handling
 
-Retrieve a paginated list of all call recordings on your account.
-
-```php
-use Vobiz\Recordings\Requests\ListRecordingsRequest;
-
-$recordings = $client->recordings->listRecordings(
-    getenv('VOBIZ_AUTH_ID'),
-    new ListRecordingsRequest([
-        'limit' => 20,
-        'offset' => 0,
-    ])
-);
-
-foreach ($recordings as $recording) {
-    echo $recording->id . "\n";
-}
-```
-
-### Convert text to speech (TTS) on a live call
-
-Play spoken text to a specific live call leg.
-
-```php
-use Vobiz\SpeakText\Requests\SpeakTextCallRequest;
-
-$client->speakText->call(
-    getenv('VOBIZ_AUTH_ID'),
-    'call_uuid_here',
-    new SpeakTextCallRequest([
-        'text' => 'Hello, your appointment is confirmed for tomorrow at 3 PM.',
-        'voice' => 'WOMAN',
-        'language' => 'en-US',
-    ])
-);
-```
-
-## Error handling
-
-When the API returns a non-success HTTP status code (e.g., 4xx or 5xx), the SDK throws a `VobizApiException`. All SDK exceptions inherit from the base `Vobiz\Exceptions\VobizException`.
+When the API returns a non-success status code (4xx or 5xx response), an exception will be thrown.
 
 ```php
 use Vobiz\Exceptions\VobizApiException;
+use Vobiz\Exceptions\VobizException;
 
 try {
-    $client->liveCalls->hangupCall(getenv('VOBIZ_AUTH_ID'), 'invalid_uuid');
+    $response = $client->calls->makeCall(...);
 } catch (VobizApiException $e) {
-    echo "API Error: " . $e->getMessage() . "\n";
-    echo "Status Code: " . $e->getCode() . "\n";
-    echo "Response Body: " . $e->getBody() . "\n";
+    echo 'API Exception occurred: ' . $e->getMessage() . "\n";
+    echo 'Status Code: ' . $e->getCode() . "\n";
+    echo 'Response Body: ' . $e->getBody() . "\n";
+    // Optionally, rethrow the exception or handle accordingly.
 }
 ```
 
-## Other Vobiz SDKs
+## Advanced
 
-Vobiz provides official SDKs for several popular programming languages. You can find them under the [Vobiz GitHub organization](https://github.com/vobiz-ai):
+### Custom Client
 
-| Language   | Repository |
-| ---------- | ---------- |
-| TypeScript | [Vobiz-Node-SDK](https://github.com/vobiz-ai/Vobiz-Node-SDK) |
-| Python     | [Vobiz-Python-SDK](https://github.com/vobiz-ai/Vobiz-Python-SDK) |
-| Go         | [Vobiz-Go-SDK](https://github.com/vobiz-ai/Vobiz-Go-SDK) |
-| Ruby       | [Vobiz-Ruby-SDK](https://github.com/vobiz-ai/Vobiz-Ruby-SDK) |
-| C#         | [Vobiz-Csharp-sdk](https://github.com/vobiz-ai/Vobiz-Csharp-sdk) |
-| Java       | [Vobiz-Java-SDK](https://github.com/vobiz-ai/Vobiz-Java-SDK) |
+This SDK is built to work with any HTTP client that implements the [PSR-18](https://www.php-fig.org/psr/psr-18/) `ClientInterface`.
+By default, if no client is provided, the SDK will use `php-http/discovery` to find an installed HTTP client.
+However, you can pass your own client that adheres to `ClientInterface`:
 
-## Support
+```php
+use Vobiz\VobizClient;
 
-If you need help or have questions, please check out our [Documentation](https://docs.vobiz.ai) or reach out through the [Vobiz Dashboard](https://console.vobiz.ai).
+// Pass any PSR-18 compatible HTTP client implementation.
+// For example, using Guzzle:
+$customClient = new \GuzzleHttp\Client([
+    'timeout' => 5.0,
+]);
 
-## License
+$client = new VobizClient(options: [
+    'client' => $customClient
+]);
 
-Released under the [MIT License](./LICENSE).
+// Or using Symfony HttpClient:
+// $customClient = (new \Symfony\Component\HttpClient\Psr18Client())
+//     ->withOptions(['timeout' => 5.0]);
+//
+// $client = new VobizClient(options: [
+//     'client' => $customClient
+// ]);
+```
+
+### Retries
+
+The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
+as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
+retry limit (default: 2).
+
+A request is deemed retryable when any of the following HTTP status codes is returned:
+
+- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
+- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (Internal Server Error)
+
+The `retryStatusCodes` configuration controls which [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) status codes are retried:
+
+- `legacy` (default): Retries `408`, `429`, and all `>= 500`
+- `recommended`: Retries `408`, `429`, `502`, `503`, `504` only (excludes `500 Internal Server Error` to avoid retrying non-idempotent failures)
+
+Use the `maxRetries` request option to configure this behavior.
+
+```php
+$response = $client->calls->makeCall(
+    ...,
+    options: [
+        'maxRetries' => 0 // Override maxRetries at the request level
+    ]
+);
+```
+
+### Timeouts
+
+The SDK defaults to a 30 second timeout. Use the `timeout` option to configure this behavior.
+
+```php
+$response = $client->calls->makeCall(
+    ...,
+    options: [
+        'timeout' => 3.0 // Override timeout at the request level
+    ]
+);
+```
+
+## Contributing
+
+While we value open-source contributions to this SDK, this library is generated programmatically.
+Additions made directly to this library would have to be moved over to our generation code,
+otherwise they would be overwritten upon the next generated release. Feel free to open a PR as
+a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
+an issue first to discuss with us!
+
+On the other hand, contributions to the README are always very welcome!
