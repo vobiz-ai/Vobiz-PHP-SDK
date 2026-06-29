@@ -1,0 +1,13 @@
+{
+  "cliVersion": "5.50.5",
+  "generatorName": "fernapi/fern-php-sdk",
+  "generatorVersion": "2.10.14",
+  "generatorConfig": {
+    "packageName": "vobiz/vobiz-php"
+  },
+  "originGitCommit": "e8a4ebb9425a3225753a525b2fd4e400cdc04676",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "manual",
+  "requestedVersion": null,
+  "ciProvider": null
+}
