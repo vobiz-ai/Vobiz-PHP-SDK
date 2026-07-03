@@ -18,6 +18,8 @@ use Vobiz\PhoneNumbers\Types\ListInventoryNumbersResponse;
 use Vobiz\PhoneNumbers\Requests\PurchaseFromInventoryRequest;
 use Vobiz\Core\Json\JsonDecoder;
 use Vobiz\PhoneNumbers\Requests\AssignNumberToTrunkRequest;
+use Vobiz\PhoneNumbers\Requests\GetNumberHealthRequest;
+use Vobiz\PhoneNumbers\Types\GetNumberHealthResponse;
 use Vobiz\PhoneNumbers\Requests\AssignDidToSubaccountRequest;
 use Vobiz\PhoneNumbers\Requests\UnassignDidFromSubaccountRequest;
 
@@ -355,6 +357,67 @@ class PhoneNumbersClient
             if ($statusCode >= 200 && $statusCode < 400) {
                 return;
             }
+        } catch (ClientExceptionInterface $e) {
+            throw new VobizException(message: $e->getMessage(), previous: $e);
+        }
+        throw new VobizApiException(
+            message: 'API request failed',
+            statusCode: $statusCode,
+            body: $response->getBody()->getContents(),
+        );
+    }
+
+    /**
+     * Returns the health & analytics dashboard for one of your numbers: current
+     * status, spam flag, and call metrics over the selected window (total and
+     * answered calls, answer rate, minutes, average duration) plus a per-period
+     * time series of snapshots.
+     *
+     * @param string $authId Your account Auth ID
+     * @param string $e164 The number in E.164, URL-encoded (use %2B instead of +).
+     * @param GetNumberHealthRequest $request
+     * @param ?array{
+     *   baseUrl?: string,
+     *   maxRetries?: int,
+     *   timeout?: float,
+     *   headers?: array<string, string>,
+     *   queryParameters?: array<string, mixed>,
+     *   bodyProperties?: array<string, mixed>,
+     * } $options
+     * @return ?GetNumberHealthResponse
+     * @throws VobizException
+     * @throws VobizApiException
+     */
+    public function getNumberHealth(string $authId, string $e164, GetNumberHealthRequest $request = new GetNumberHealthRequest(), ?array $options = null): ?GetNumberHealthResponse
+    {
+        $options = array_merge($this->options, $options ?? []);
+        $query = [];
+        if ($request->granularity != null) {
+            $query['granularity'] = $request->granularity;
+        }
+        if ($request->days != null) {
+            $query['days'] = $request->days;
+        }
+        try {
+            $response = $this->client->sendRequest(
+                new JsonApiRequest(
+                    baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Production->value,
+                    path: "api/v1/account/{$authId}/numbers/{$e164}/health",
+                    method: HttpMethod::GET,
+                    query: $query,
+                ),
+                $options,
+            );
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 200 && $statusCode < 400) {
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return GetNumberHealthResponse::fromJson($json);
+            }
+        } catch (JsonException $e) {
+            throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
         } catch (ClientExceptionInterface $e) {
             throw new VobizException(message: $e->getMessage(), previous: $e);
         }

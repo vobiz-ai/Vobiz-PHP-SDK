@@ -39,6 +39,41 @@ class ListCdrsRequest extends JsonSerializableType
     public ?int $minDuration;
 
     /**
+     * @var ?string $sipCallId Filter by the SIP Call-ID of the call (matches the cdr's sip_call_id field).
+     */
+    public ?string $sipCallId;
+
+    /**
+     * @var ?string $bridgeUuid Filter by the UUID of the bridged leg (matches the cdr's bridge_uuid field).
+     */
+    public ?string $bridgeUuid;
+
+    /**
+     * @var ?string $hangupCause Filter by telephony hangup cause, e.g. NORMAL_CLEARING.
+     */
+    public ?string $hangupCause;
+
+    /**
+     * @var ?string $hangupDisposition Filter by how the leg was released, e.g. send_refuse.
+     */
+    public ?string $hangupDisposition;
+
+    /**
+     * @var ?string $context Filter by the call context, e.g. sip-trunking.
+     */
+    public ?string $context;
+
+    /**
+     * @var ?string $campaignId Filter by the campaign identifier associated with the call.
+     */
+    public ?string $campaignId;
+
+    /**
+     * @var ?string $search Free-text search across CDR fields (numbers, IDs, etc.).
+     */
+    public ?string $search;
+
+    /**
      * @var ?int $page Page number for paginated results.
      */
     public ?int $page;
@@ -56,6 +91,13 @@ class ListCdrsRequest extends JsonSerializableType
      *   endDate?: ?DateTime,
      *   callDirection?: ?value-of<ListCdrsRequestCallDirection>,
      *   minDuration?: ?int,
+     *   sipCallId?: ?string,
+     *   bridgeUuid?: ?string,
+     *   hangupCause?: ?string,
+     *   hangupDisposition?: ?string,
+     *   context?: ?string,
+     *   campaignId?: ?string,
+     *   search?: ?string,
      *   page?: ?int,
      *   perPage?: ?int,
      * } $values
@@ -69,6 +111,13 @@ class ListCdrsRequest extends JsonSerializableType
         $this->endDate = $values['endDate'] ?? null;
         $this->callDirection = $values['callDirection'] ?? null;
         $this->minDuration = $values['minDuration'] ?? null;
+        $this->sipCallId = $values['sipCallId'] ?? null;
+        $this->bridgeUuid = $values['bridgeUuid'] ?? null;
+        $this->hangupCause = $values['hangupCause'] ?? null;
+        $this->hangupDisposition = $values['hangupDisposition'] ?? null;
+        $this->context = $values['context'] ?? null;
+        $this->campaignId = $values['campaignId'] ?? null;
+        $this->search = $values['search'] ?? null;
         $this->page = $values['page'] ?? null;
         $this->perPage = $values['perPage'] ?? null;
     }

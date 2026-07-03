@@ -97,6 +97,27 @@ class CdrClient
         if ($request->minDuration != null) {
             $query['min_duration'] = $request->minDuration;
         }
+        if ($request->sipCallId != null) {
+            $query['sip_call_id'] = $request->sipCallId;
+        }
+        if ($request->bridgeUuid != null) {
+            $query['bridge_uuid'] = $request->bridgeUuid;
+        }
+        if ($request->hangupCause != null) {
+            $query['hangup_cause'] = $request->hangupCause;
+        }
+        if ($request->hangupDisposition != null) {
+            $query['hangup_disposition'] = $request->hangupDisposition;
+        }
+        if ($request->context != null) {
+            $query['context'] = $request->context;
+        }
+        if ($request->campaignId != null) {
+            $query['campaign_id'] = $request->campaignId;
+        }
+        if ($request->search != null) {
+            $query['search'] = $request->search;
+        }
         if ($request->page != null) {
             $query['page'] = $request->page;
         }
@@ -172,6 +193,27 @@ class CdrClient
         }
         if ($request->minDuration != null) {
             $query['min_duration'] = $request->minDuration;
+        }
+        if ($request->sipCallId != null) {
+            $query['sip_call_id'] = $request->sipCallId;
+        }
+        if ($request->bridgeUuid != null) {
+            $query['bridge_uuid'] = $request->bridgeUuid;
+        }
+        if ($request->hangupCause != null) {
+            $query['hangup_cause'] = $request->hangupCause;
+        }
+        if ($request->hangupDisposition != null) {
+            $query['hangup_disposition'] = $request->hangupDisposition;
+        }
+        if ($request->context != null) {
+            $query['context'] = $request->context;
+        }
+        if ($request->campaignId != null) {
+            $query['campaign_id'] = $request->campaignId;
+        }
+        if ($request->search != null) {
+            $query['search'] = $request->search;
         }
         if ($request->page != null) {
             $query['page'] = $request->page;
@@ -304,6 +346,27 @@ class CdrClient
         }
         if ($request->minDuration != null) {
             $query['min_duration'] = $request->minDuration;
+        }
+        if ($request->sipCallId != null) {
+            $query['sip_call_id'] = $request->sipCallId;
+        }
+        if ($request->bridgeUuid != null) {
+            $query['bridge_uuid'] = $request->bridgeUuid;
+        }
+        if ($request->hangupCause != null) {
+            $query['hangup_cause'] = $request->hangupCause;
+        }
+        if ($request->hangupDisposition != null) {
+            $query['hangup_disposition'] = $request->hangupDisposition;
+        }
+        if ($request->context != null) {
+            $query['context'] = $request->context;
+        }
+        if ($request->campaignId != null) {
+            $query['campaign_id'] = $request->campaignId;
+        }
+        if ($request->search != null) {
+            $query['search'] = $request->search;
         }
         try {
             $response = $this->client->sendRequest(
