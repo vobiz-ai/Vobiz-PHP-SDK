@@ -3673,10 +3673,16 @@ Create a new SIP trunk for inbound or outbound calling.
 $client->trunks->createTrunk(
     'MA_XXXXXX',
     new CreateTrunkRequest([
-        'name' => 'My Outbound Trunk',
-        'trunkType' => 'OUTBOUND',
-        'maxConcurrentCalls' => 10,
-        'webhookUrl' => 'https://your-app.example.com/trunk-webhook',
+        'name' => 'Retell AI SIP',
+        'trunkDirection' => CreateTrunkRequestTrunkDirection::Outbound->value,
+        'transport' => CreateTrunkRequestTransport::Udp->value,
+        'concurrentCallsLimit' => 50,
+        'cpsLimit' => 15,
+        'credentialUuid' => 'b1e2...',
+        'ipaclUuid' => 'c3d4...',
+        'recording' => true,
+        'enableTranscription' => true,
+        'webhookUrl' => 'https://example.com/vobiz/webhook',
         'webhookMethod' => CreateTrunkRequestWebhookMethod::Post->value,
     ]),
 );
@@ -3702,7 +3708,7 @@ $client->trunks->createTrunk(
 <dl>
 <dd>
 
-**$name:** `string` 
+**$name:** `string` — Trunk name.
     
 </dd>
 </dl>
@@ -3710,7 +3716,7 @@ $client->trunks->createTrunk(
 <dl>
 <dd>
 
-**$trunkType:** `string` 
+**$trunkDirection:** `?string` — Direction of the trunk — **`inbound` or `outbound` only** (a trunk is one direction, not both).
     
 </dd>
 </dl>
@@ -3718,7 +3724,127 @@ $client->trunks->createTrunk(
 <dl>
 <dd>
 
-**$maxConcurrentCalls:** `int` 
+**$trunkStatus:** `?string` — Trunk status — `enabled` or `disabled` (note: not `active`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$secure:** `?bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$trunkDomain:** `?string` — SIP domain. Auto-generated as `{first8ofUUID}.sip.vobiz.ai` if omitted.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$transport:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$inboundDestination:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$description:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$concurrentCallsLimit:** `?int` — Stored on the trunk. The **enforced** concurrency limit is account-level (account base + channel subscriptions), not this field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$cpsLimit:** `?int` — Stored on the trunk. The **enforced** CPS is account-level, not this field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$credentialUuid:** `?string` — Attach an existing SIP credential (username / password / realm) by UUID.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$ipaclUuid:** `?string` — Attach an existing IP access-control list (IP-based auth) by UUID.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$primaryUriUuid:** `?string` — Primary origination URI UUID.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$fallbackUriUuid:** `?string` — Fallback origination URI UUID.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recording:** `?bool` — Enable call recording.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$enableTranscription:** `?bool` — Auto-transcribe recordings when `recording=true`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$piiRedaction:** `?bool` — Redact PII from transcriptions.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$piiEntityTypes:** `?string` — Comma-separated list of entity types to redact.
     
 </dd>
 </dl>
@@ -3728,9 +3854,10 @@ $client->trunks->createTrunk(
 
 **$webhookUrl:** `?string` 
 
-HTTPS URL to receive real-time call-event webhooks (`CallInitiated`
-and `Hangup`) for this trunk. Max 500 characters; private, localhost,
-and cloud-metadata IPs are blocked. See [Trunk Webhooks](/trunks/webhook).
+Customer webhook for call-admission events (`CallInitiated` / `Hangup`).
+Must be a valid **public** http/https URL. SSRF-validated — localhost,
+private (RFC1918), and cloud-metadata (`169.254.169.254`) URLs are
+rejected with `invalid webhook_url`. See [Trunk Webhooks](/trunks/webhook).
     
 </dd>
 </dl>
@@ -3738,7 +3865,39 @@ and cloud-metadata IPs are blocked. See [Trunk Webhooks](/trunks/webhook).
 <dl>
 <dd>
 
-**$webhookMethod:** `?string` — HTTP method for the webhook callback. Defaults to `POST`.
+**$webhookMethod:** `?string` — HTTP method for the webhook callback.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingWebhookEnabled:** `?bool` — Fire a `recording.completed` webhook to `webhook_url` after a recording is saved.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$username:** `?string` — Deprecated — use `credential_uuid`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$password:** `?string` — Deprecated — use `credential_uuid`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$ipWhitelist:** `?array` — Deprecated — use `ipacl_uuid`.
     
 </dd>
 </dl>
@@ -3845,11 +4004,7 @@ Update a SIP trunk's name, configuration, or status.
 $client->trunks->updateTrunk(
     'MA_XXXXXX',
     'trunk_id',
-    new UpdateTrunkRequest([
-        'name' => 'name',
-        'maxConcurrentCalls' => 1,
-        'enabled' => true,
-    ]),
+    new UpdateTrunkRequest([]),
 );
 ```
 </dd>
@@ -3881,7 +4036,7 @@ $client->trunks->updateTrunk(
 <dl>
 <dd>
 
-**$name:** `string` 
+**$name:** `?string` 
     
 </dd>
 </dl>
@@ -3889,7 +4044,7 @@ $client->trunks->updateTrunk(
 <dl>
 <dd>
 
-**$maxConcurrentCalls:** `int` 
+**$trunkDirection:** `?string` — Direction of the trunk — `inbound` or `outbound` only.
     
 </dd>
 </dl>
@@ -3897,7 +4052,7 @@ $client->trunks->updateTrunk(
 <dl>
 <dd>
 
-**$enabled:** `bool` 
+**$trunkStatus:** `?string` 
     
 </dd>
 </dl>
@@ -3905,7 +4060,7 @@ $client->trunks->updateTrunk(
 <dl>
 <dd>
 
-**$webhookUrl:** `?string` — HTTPS URL for real-time call-event webhooks (`CallInitiated`, `Hangup`). See [Trunk Webhooks](/trunks/webhook).
+**$secure:** `?bool` 
     
 </dd>
 </dl>
@@ -3913,7 +4068,135 @@ $client->trunks->updateTrunk(
 <dl>
 <dd>
 
-**$webhookMethod:** `?string` — HTTP method for the webhook callback. Defaults to `POST`.
+**$trunkDomain:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$transport:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$inboundDestination:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$description:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$concurrentCallsLimit:** `?int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$cpsLimit:** `?int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$credentialUuid:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$ipaclUuid:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$primaryUriUuid:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$fallbackUriUuid:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recording:** `?bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$enableTranscription:** `?bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$piiRedaction:** `?bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$piiEntityTypes:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$webhookUrl:** `?string` — Customer webhook for call-admission events (`CallInitiated` / `Hangup`). Public http/https URL; SSRF-validated. See [Trunk Webhooks](/trunks/webhook).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$webhookMethod:** `?string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingWebhookEnabled:** `?bool` 
     
 </dd>
 </dl>

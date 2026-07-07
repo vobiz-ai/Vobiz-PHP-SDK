@@ -220,7 +220,7 @@ class TrunksClient
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function updateTrunk(string $authId, string $trunkId, UpdateTrunkRequest $request, ?array $options = null): ?UpdateTrunkResponse
+    public function updateTrunk(string $authId, string $trunkId, UpdateTrunkRequest $request = new UpdateTrunkRequest(), ?array $options = null): ?UpdateTrunkResponse
     {
         $options = array_merge($this->options, $options ?? []);
         try {
