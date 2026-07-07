@@ -3676,6 +3676,8 @@ $client->trunks->createTrunk(
         'name' => 'My Outbound Trunk',
         'trunkType' => 'OUTBOUND',
         'maxConcurrentCalls' => 10,
+        'webhookUrl' => 'https://your-app.example.com/trunk-webhook',
+        'webhookMethod' => CreateTrunkRequestWebhookMethod::Post->value,
     ]),
 );
 ```
@@ -3717,6 +3719,26 @@ $client->trunks->createTrunk(
 <dd>
 
 **$maxConcurrentCalls:** `int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$webhookUrl:** `?string` 
+
+HTTPS URL to receive real-time call-event webhooks (`CallInitiated`
+and `Hangup`) for this trunk. Max 500 characters; private, localhost,
+and cloud-metadata IPs are blocked. See [Trunk Webhooks](/trunks/webhook).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$webhookMethod:** `?string` — HTTP method for the webhook callback. Defaults to `POST`.
     
 </dd>
 </dl>
@@ -3876,6 +3898,22 @@ $client->trunks->updateTrunk(
 <dd>
 
 **$enabled:** `bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$webhookUrl:** `?string` — HTTPS URL for real-time call-event webhooks (`CallInitiated`, `Hangup`). See [Trunk Webhooks](/trunks/webhook).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$webhookMethod:** `?string` — HTTP method for the webhook callback. Defaults to `POST`.
     
 </dd>
 </dl>
