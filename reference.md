@@ -3049,6 +3049,7 @@ $client->phoneNumbers->listInventoryNumbers(
     'MA_XXXXXX',
     new ListInventoryNumbersRequest([
         'country' => 'IN',
+        'exclude' => '9180,9192',
     ]),
 );
 ```
