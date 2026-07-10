@@ -187,6 +187,9 @@ class PhoneNumbersClient
         if ($request->search != null) {
             $query['search'] = $request->search;
         }
+        if ($request->exclude != null) {
+            $query['exclude'] = $request->exclude;
+        }
         if ($request->page != null) {
             $query['page'] = $request->page;
         }
