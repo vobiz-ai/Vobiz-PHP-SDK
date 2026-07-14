@@ -51,7 +51,7 @@ class ConferenceClient
     }
 
     /**
-     * Remove a specific participant from a conference call.
+     * Remove one or more participants from a conference while allowing their XML flow to continue.
      *
      * @param string $authId Your account Auth ID
      * @param string $conferenceName
@@ -101,7 +101,7 @@ class ConferenceClient
     }
 
     /**
-     * Disconnect a specific member from a conference.
+     * Terminate one or more active conference member calls. A normal active-member request disconnects the member. If a member was kicked, continued its XML flow, and rejoined with the same numeric member ID, confirm removal through conference exit or call hangup callbacks.
      *
      * @param string $authId Your account Auth ID
      * @param string $conferenceName
@@ -158,10 +158,11 @@ class ConferenceClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
+     * @return mixed
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function playAudioMember(string $authId, string $conferenceName, string $memberId, PlayAudioMemberRequest $request, ?array $options = null): void
+    public function playAudioMember(string $authId, string $conferenceName, string $memberId, PlayAudioMemberRequest $request, ?array $options = null): mixed
     {
         $options = array_merge($this->options, $options ?? []);
         try {
@@ -176,8 +177,14 @@ class ConferenceClient
             );
             $statusCode = $response->getStatusCode();
             if ($statusCode >= 200 && $statusCode < 400) {
-                return;
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return JsonDecoder::decodeMixed($json);
             }
+        } catch (JsonException $e) {
+            throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
         } catch (ClientExceptionInterface $e) {
             throw new VobizException(message: $e->getMessage(), previous: $e);
         }
@@ -245,10 +252,11 @@ class ConferenceClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
+     * @return mixed
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function deafMember(string $authId, string $conferenceName, string $memberId, ?array $options = null): void
+    public function deafMember(string $authId, string $conferenceName, string $memberId, ?array $options = null): mixed
     {
         $options = array_merge($this->options, $options ?? []);
         try {
@@ -262,8 +270,14 @@ class ConferenceClient
             );
             $statusCode = $response->getStatusCode();
             if ($statusCode >= 200 && $statusCode < 400) {
-                return;
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return JsonDecoder::decodeMixed($json);
             }
+        } catch (JsonException $e) {
+            throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
         } catch (ClientExceptionInterface $e) {
             throw new VobizException(message: $e->getMessage(), previous: $e);
         }

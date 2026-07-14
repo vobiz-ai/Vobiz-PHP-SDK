@@ -4,10 +4,15 @@ namespace Vobiz\Conferences\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
-use Vobiz\Core\Types\ArrayType;
 
-class ListConferencesResponse extends JsonSerializableType
+class GetConferenceResponseError extends JsonSerializableType
 {
+    /**
+     * @var value-of<GetConferenceResponseErrorError> $error
+     */
+    #[JsonProperty('error')]
+    public string $error;
+
     /**
      * @var string $apiId
      */
@@ -15,22 +20,16 @@ class ListConferencesResponse extends JsonSerializableType
     public string $apiId;
 
     /**
-     * @var array<string> $conferences Conference names reported by the API. An empty array is inconclusive.
-     */
-    #[JsonProperty('conferences'), ArrayType(['string'])]
-    public array $conferences;
-
-    /**
      * @param array{
+     *   error: value-of<GetConferenceResponseErrorError>,
      *   apiId: string,
-     *   conferences: array<string>,
      * } $values
      */
     public function __construct(
         array $values,
     ) {
+        $this->error = $values['error'];
         $this->apiId = $values['apiId'];
-        $this->conferences = $values['conferences'];
     }
 
     /**

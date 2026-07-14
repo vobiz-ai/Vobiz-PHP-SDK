@@ -9,6 +9,8 @@ use Vobiz\Exceptions\VobizApiException;
 use Vobiz\Core\Json\JsonApiRequest;
 use Vobiz\Environments;
 use Vobiz\Core\Client\HttpMethod;
+use Vobiz\Core\Json\JsonDecoder;
+use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class ConferenceMembersClient
@@ -61,10 +63,11 @@ class ConferenceMembersClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
+     * @return mixed
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function muteMember(string $authId, string $conferenceName, string $memberId, ?array $options = null): void
+    public function muteMember(string $authId, string $conferenceName, string $memberId, ?array $options = null): mixed
     {
         $options = array_merge($this->options, $options ?? []);
         try {
@@ -78,8 +81,14 @@ class ConferenceMembersClient
             );
             $statusCode = $response->getStatusCode();
             if ($statusCode >= 200 && $statusCode < 400) {
-                return;
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return JsonDecoder::decodeMixed($json);
             }
+        } catch (JsonException $e) {
+            throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
         } catch (ClientExceptionInterface $e) {
             throw new VobizException(message: $e->getMessage(), previous: $e);
         }

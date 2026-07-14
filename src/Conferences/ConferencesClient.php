@@ -12,7 +12,10 @@ use Vobiz\Environments;
 use Vobiz\Core\Client\HttpMethod;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
+use Vobiz\Conferences\Types\GetConferenceResponseConferenceMemberCount;
+use Vobiz\Conferences\Types\GetConferenceResponseError;
 use Vobiz\Core\Json\JsonDecoder;
+use Vobiz\Core\Types\Union;
 
 class ConferencesClient
 {
@@ -51,7 +54,7 @@ class ConferencesClient
     }
 
     /**
-     * Retrieve all active conference rooms on the account.
+     * Retrieve conference room names reported by the API. An empty array is inconclusive and can occur while conferences are active. Maintain your own room registry for authoritative discovery, billing, cleanup, and destructive workflows.
      *
      * @param string $authId Your account Auth ID
      * @param ?array{
@@ -140,7 +143,7 @@ class ConferencesClient
     }
 
     /**
-     * Get details and member list of a specific conference room.
+     * Retrieve a specific conference room. A live conference can currently return a 200 response with an error payload instead of conference details.
      *
      * @param string $authId Your account Auth ID
      * @param string $conferenceName
@@ -152,11 +155,14 @@ class ConferencesClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
-     * @return mixed
+     * @return (
+     *    GetConferenceResponseConferenceMemberCount
+     *   |GetConferenceResponseError
+     * )|null
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function getConference(string $authId, string $conferenceName, ?array $options = null): mixed
+    public function getConference(string $authId, string $conferenceName, ?array $options = null): GetConferenceResponseConferenceMemberCount|GetConferenceResponseError|null
     {
         $options = array_merge($this->options, $options ?? []);
         try {
@@ -174,7 +180,7 @@ class ConferencesClient
                 if (empty($json)) {
                     return null;
                 }
-                return JsonDecoder::decodeMixed($json);
+                return JsonDecoder::decodeUnion($json, new Union(GetConferenceResponseConferenceMemberCount::class, GetConferenceResponseError::class)); // @phpstan-ignore-line
             }
         } catch (JsonException $e) {
             throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
