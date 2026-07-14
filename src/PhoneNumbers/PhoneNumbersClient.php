@@ -80,11 +80,14 @@ class PhoneNumbersClient
     {
         $options = array_merge($this->options, $options ?? []);
         $query = [];
-        if ($request->limit != null) {
-            $query['limit'] = $request->limit;
+        if ($request->page != null) {
+            $query['page'] = $request->page;
         }
-        if ($request->offset != null) {
-            $query['offset'] = $request->offset;
+        if ($request->perPage != null) {
+            $query['per_page'] = $request->perPage;
+        }
+        if ($request->search != null) {
+            $query['search'] = $request->search;
         }
         try {
             $response = $this->client->sendRequest(

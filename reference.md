@@ -2907,7 +2907,9 @@ List all phone numbers on your account.
 ```php
 $client->phoneNumbers->listNumbers(
     'MA_XXXXXX',
-    new ListNumbersRequest([]),
+    new ListNumbersRequest([
+        'search' => '+919876543210',
+    ]),
 );
 ```
 </dd>
@@ -2931,7 +2933,7 @@ $client->phoneNumbers->listNumbers(
 <dl>
 <dd>
 
-**$limit:** `?int` 
+**$page:** `?int` — Page number, starting at 1
     
 </dd>
 </dl>
@@ -2939,7 +2941,15 @@ $client->phoneNumbers->listNumbers(
 <dl>
 <dd>
 
-**$offset:** `?int` 
+**$perPage:** `?int` — Number of phone numbers to return per page
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$search:** `?string` — Filter by phone number. Include the country code and URL-encode a leading plus sign.
     
 </dd>
 </dl>

@@ -7,25 +7,32 @@ use Vobiz\Core\Json\JsonSerializableType;
 class ListNumbersRequest extends JsonSerializableType
 {
     /**
-     * @var ?int $limit
+     * @var ?int $page Page number, starting at 1
      */
-    public ?int $limit;
+    public ?int $page;
 
     /**
-     * @var ?int $offset
+     * @var ?int $perPage Number of phone numbers to return per page
      */
-    public ?int $offset;
+    public ?int $perPage;
+
+    /**
+     * @var ?string $search Filter by phone number. Include the country code and URL-encode a leading plus sign.
+     */
+    public ?string $search;
 
     /**
      * @param array{
-     *   limit?: ?int,
-     *   offset?: ?int,
+     *   page?: ?int,
+     *   perPage?: ?int,
+     *   search?: ?string,
      * } $values
      */
     public function __construct(
         array $values = [],
     ) {
-        $this->limit = $values['limit'] ?? null;
-        $this->offset = $values['offset'] ?? null;
+        $this->page = $values['page'] ?? null;
+        $this->perPage = $values['perPage'] ?? null;
+        $this->search = $values['search'] ?? null;
     }
 }
