@@ -524,6 +524,10 @@ class PartnerApiClient
     }
 
     /**
+     * Returns the authenticated partner's KYC sessions. Filter the list by
+     * session status or customer account, and use `page` and `size` to
+     * paginate the results.
+     *
      * @param ListKycSessionsRequest $request
      * @param ?array{
      *   baseUrl?: string,
@@ -635,6 +639,9 @@ class PartnerApiClient
     }
 
     /**
+     * Returns the current status and available details for one KYC session
+     * owned by the authenticated partner.
+     *
      * @param string $sessionId
      * @param ?array{
      *   baseUrl?: string,
