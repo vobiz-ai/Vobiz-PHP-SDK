@@ -1428,9 +1428,9 @@ Create a new sub-account under the master account.
 
 Set `kyc_mode` to control how the sub-account is verified:
 
-- `personal_use` *(default)* — the sub-account inherits the parent's
+- `personal_use` *(default)* - the sub-account inherits the parent's
   KYC; no separate verification is required.
-- `customer_use` — the sub-account must complete its own KYC before it
+- `customer_use` - the sub-account must complete its own KYC before it
   can place calls. A fresh `customer_use` sub-account is returned with
   `kyc_calls_blocked: true`. `customer_use` **requires** `email`.
 </dd>
@@ -2389,7 +2389,7 @@ browser is sent to this URL.
 <dl>
 <dd>
 
-Mock PAN verification — never hits the provider. Magic `pan` inputs:
+Mock PAN verification - never hits the provider. Magic `pan` inputs:
 
 | Input | Outcome |
 |---|---|
@@ -2811,7 +2811,7 @@ $client->subAccountKycTestMode->mockSubaccountDigilockerVerify(
 <dd>
 
 Promotes the most recent **pending** mock verification of the given
-type to a terminal outcome — this drives the async (`TESTPENDING…`)
+type to a terminal outcome - this drives the async (`TESTPENDING…`)
 path without webhooks. `verification_type` ∈ `pan | aadhaar | gst | cin`;
 `outcome` ∈ `verified | failed`.
 </dd>
@@ -3735,7 +3735,7 @@ $client->trunks->createTrunk(
 <dl>
 <dd>
 
-**$trunkDirection:** `?string` — Direction of the trunk — **`inbound` or `outbound` only** (a trunk is one direction, not both).
+**$trunkDirection:** `?string` — Direction of the trunk - **`inbound` or `outbound` only** (a trunk is one direction, not both).
     
 </dd>
 </dl>
@@ -3743,7 +3743,7 @@ $client->trunks->createTrunk(
 <dl>
 <dd>
 
-**$trunkStatus:** `?string` — Trunk status — `enabled` or `disabled` (note: not `active`).
+**$trunkStatus:** `?string` — Trunk status - `enabled` or `disabled` (note: not `active`).
     
 </dd>
 </dl>
@@ -3874,7 +3874,7 @@ $client->trunks->createTrunk(
 **$webhookUrl:** `?string` 
 
 Customer webhook for call-admission events (`CallInitiated` / `Hangup`).
-Must be a valid **public** http/https URL. SSRF-validated — localhost,
+Must be a valid **public** http/https URL. SSRF-validated - localhost,
 private (RFC1918), and cloud-metadata (`169.254.169.254`) URLs are
 rejected with `invalid webhook_url`. See [Trunk Webhooks](/trunks/webhook).
     
@@ -3900,7 +3900,7 @@ rejected with `invalid webhook_url`. See [Trunk Webhooks](/trunks/webhook).
 <dl>
 <dd>
 
-**$username:** `?string` — Deprecated — use `credential_uuid`.
+**$username:** `?string` — Deprecated - use `credential_uuid`.
     
 </dd>
 </dl>
@@ -3908,7 +3908,7 @@ rejected with `invalid webhook_url`. See [Trunk Webhooks](/trunks/webhook).
 <dl>
 <dd>
 
-**$password:** `?string` — Deprecated — use `credential_uuid`.
+**$password:** `?string` — Deprecated - use `credential_uuid`.
     
 </dd>
 </dl>
@@ -3916,7 +3916,7 @@ rejected with `invalid webhook_url`. See [Trunk Webhooks](/trunks/webhook).
 <dl>
 <dd>
 
-**$ipWhitelist:** `?array` — Deprecated — use `ipacl_uuid`.
+**$ipWhitelist:** `?array` — Deprecated - use `ipacl_uuid`.
     
 </dd>
 </dl>
@@ -4063,7 +4063,7 @@ $client->trunks->updateTrunk(
 <dl>
 <dd>
 
-**$trunkDirection:** `?string` — Direction of the trunk — `inbound` or `outbound` only.
+**$trunkDirection:** `?string` — Direction of the trunk - `inbound` or `outbound` only.
     
 </dd>
 </dl>

@@ -19,13 +19,13 @@ class CreateTrunkRequest extends JsonSerializableType
     public string $name;
 
     /**
-     * @var ?value-of<CreateTrunkRequestTrunkDirection> $trunkDirection Direction of the trunk — **`inbound` or `outbound` only** (a trunk is one direction, not both).
+     * @var ?value-of<CreateTrunkRequestTrunkDirection> $trunkDirection Direction of the trunk - **`inbound` or `outbound` only** (a trunk is one direction, not both).
      */
     #[JsonProperty('trunk_direction')]
     public ?string $trunkDirection;
 
     /**
-     * @var ?value-of<CreateTrunkRequestTrunkStatus> $trunkStatus Trunk status — `enabled` or `disabled` (note: not `active`).
+     * @var ?value-of<CreateTrunkRequestTrunkStatus> $trunkStatus Trunk status - `enabled` or `disabled` (note: not `active`).
      */
     #[JsonProperty('trunk_status')]
     public ?string $trunkStatus;
@@ -122,7 +122,7 @@ class CreateTrunkRequest extends JsonSerializableType
 
     /**
      * Customer webhook for call-admission events (`CallInitiated` / `Hangup`).
-     * Must be a valid **public** http/https URL. SSRF-validated — localhost,
+     * Must be a valid **public** http/https URL. SSRF-validated - localhost,
      * private (RFC1918), and cloud-metadata (`169.254.169.254`) URLs are
      * rejected with `invalid webhook_url`. See [Trunk Webhooks](/trunks/webhook).
      *
@@ -144,19 +144,19 @@ class CreateTrunkRequest extends JsonSerializableType
     public ?bool $recordingWebhookEnabled;
 
     /**
-     * @var ?string $username Deprecated — use `credential_uuid`.
+     * @var ?string $username Deprecated - use `credential_uuid`.
      */
     #[JsonProperty('username')]
     public ?string $username;
 
     /**
-     * @var ?string $password Deprecated — use `credential_uuid`.
+     * @var ?string $password Deprecated - use `credential_uuid`.
      */
     #[JsonProperty('password')]
     public ?string $password;
 
     /**
-     * @var ?array<string> $ipWhitelist Deprecated — use `ipacl_uuid`.
+     * @var ?array<string> $ipWhitelist Deprecated - use `ipacl_uuid`.
      */
     #[JsonProperty('ip_whitelist'), ArrayType(['string'])]
     public ?array $ipWhitelist;

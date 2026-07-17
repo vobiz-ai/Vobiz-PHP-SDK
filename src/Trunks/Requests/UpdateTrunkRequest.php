@@ -18,7 +18,7 @@ class UpdateTrunkRequest extends JsonSerializableType
     public ?string $name;
 
     /**
-     * @var ?value-of<UpdateTrunkRequestTrunkDirection> $trunkDirection Direction of the trunk — `inbound` or `outbound` only.
+     * @var ?value-of<UpdateTrunkRequestTrunkDirection> $trunkDirection Direction of the trunk - `inbound` or `outbound` only.
      */
     #[JsonProperty('trunk_direction')]
     public ?string $trunkDirection;
