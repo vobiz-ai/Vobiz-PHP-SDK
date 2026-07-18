@@ -180,7 +180,8 @@ class VobizClient
     private RawClient $client;
 
     /**
-     * @param string $apiKey The apiKey to use for authentication.
+     * @param string $token The token to use for authentication.
+     * @param string $authId
      * @param string $authToken
      * @param ?array{
      *   baseUrl?: string,
@@ -191,12 +192,14 @@ class VobizClient
      * } $options
      */
     public function __construct(
-        string $apiKey,
+        string $token,
+        string $authId,
         string $authToken,
         ?array $options = null,
     ) {
         $defaultHeaders = [
-            'X-Auth-ID' => $apiKey,
+            'Authorization' => "Bearer $token",
+            'X-Auth-ID' => $authId,
             'X-Auth-Token' => $authToken,
             'X-Fern-Language' => 'PHP',
             'X-Fern-SDK-Name' => 'Vobiz',

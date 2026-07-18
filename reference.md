@@ -95,6 +95,158 @@ $client->account->getConcurrency(
 </dl>
 </details>
 
+<details><summary><code>$client-&gt;account-&gt;previewChannelPricing($authId, $request) -> ?ChannelPricingPreview</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Calculate the monthly price for CPS or concurrent-call capacity without purchasing capacity or debiting the account.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```php
+$client->account->previewChannelPricing(
+    'MA_XXXX',
+    new PreviewChannelPricingRequest([
+        'resourceType' => CapacityResourceType::ConcurrentCalls->value,
+        'quantity' => 30,
+    ]),
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**$authId:** `string` — Target account Auth ID. An account can preview only its own pricing; administrators may act for another account.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$resourceType:** `string` — Capacity type to price.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$quantity:** `int` — Capacity quantity to price. Pricing-tier block and quantity rules also apply.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>$client-&gt;account-&gt;createChannelSubscription($authId, $request) -> ?ChannelSubscription</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Purchase recurring CPS or concurrent-call capacity. A successful request immediately debits the first monthly charge and activates a subscription that renews every 30 days.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```php
+$client->account->createChannelSubscription(
+    'MA_XXXX',
+    new ChannelSubscriptionRequest([
+        'resourceType' => CapacityResourceType::ConcurrentCalls->value,
+        'quantity' => 30,
+    ]),
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**$authId:** `string` — Target account Auth ID. An account can purchase only for itself; administrators may act for another account.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$resourceType:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$quantity:** `int` — Capacity quantity to purchase. Pricing-tier block and quantity rules also apply.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Balance
 <details><summary><code>$client-&gt;balance-&gt;getBalance($authId, $currency) -> ?GetBalanceResponse</code></summary>
 <dl>
