@@ -20,10 +20,22 @@ class CancelNumberReleaseResponse extends JsonSerializableType
     public string $status;
 
     /**
-     * @var value-of<CancelNumberReleaseResponseRefundStatus> $refundStatus
+     * @var ?string $currency
+     */
+    #[JsonProperty('currency')]
+    public ?string $currency;
+
+    /**
+     * @var ?float $refundAmount
+     */
+    #[JsonProperty('refund_amount')]
+    public ?float $refundAmount;
+
+    /**
+     * @var ?value-of<CancelNumberReleaseResponseRefundStatus> $refundStatus
      */
     #[JsonProperty('refund_status')]
-    public string $refundStatus;
+    public ?string $refundStatus;
 
     /**
      * @var ?string $refundError Present when the refund could not be processed.
@@ -35,7 +47,9 @@ class CancelNumberReleaseResponse extends JsonSerializableType
      * @param array{
      *   message: string,
      *   status: value-of<CancelNumberReleaseResponseStatus>,
-     *   refundStatus: value-of<CancelNumberReleaseResponseRefundStatus>,
+     *   currency?: ?string,
+     *   refundAmount?: ?float,
+     *   refundStatus?: ?value-of<CancelNumberReleaseResponseRefundStatus>,
      *   refundError?: ?string,
      * } $values
      */
@@ -44,7 +58,9 @@ class CancelNumberReleaseResponse extends JsonSerializableType
     ) {
         $this->message = $values['message'];
         $this->status = $values['status'];
-        $this->refundStatus = $values['refundStatus'];
+        $this->currency = $values['currency'] ?? null;
+        $this->refundAmount = $values['refundAmount'] ?? null;
+        $this->refundStatus = $values['refundStatus'] ?? null;
         $this->refundError = $values['refundError'] ?? null;
     }
 

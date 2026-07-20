@@ -14,6 +14,7 @@ use Vobiz\Core\Client\HttpMethod;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Vobiz\PhoneNumbers\Requests\UnrentNumberRequest;
+use Vobiz\PhoneNumbers\Types\UnrentNumberResponse;
 use Vobiz\PhoneNumbers\Types\CancelNumberReleaseResponse;
 use Vobiz\PhoneNumbers\Requests\ListInventoryNumbersRequest;
 use Vobiz\PhoneNumbers\Types\ListInventoryNumbersResponse;
@@ -128,7 +129,7 @@ class PhoneNumbersClient
      * cannot be cancelled.
      *
      * @param string $authId Your account Auth ID
-     * @param string $e164 Phone number in E.164 format (without the +)
+     * @param string $e164 The URL-encoded phone number in E.164 format. Encode `+` as `%2B`.
      * @param UnrentNumberRequest $request
      * @param ?array{
      *   baseUrl?: string,
@@ -138,10 +139,11 @@ class PhoneNumbersClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
+     * @return ?UnrentNumberResponse
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function unrentNumber(string $authId, string $e164, UnrentNumberRequest $request = new UnrentNumberRequest(), ?array $options = null): void
+    public function unrentNumber(string $authId, string $e164, UnrentNumberRequest $request = new UnrentNumberRequest(), ?array $options = null): ?UnrentNumberResponse
     {
         $options = array_merge($this->options, $options ?? []);
         $query = [];
@@ -160,8 +162,14 @@ class PhoneNumbersClient
             );
             $statusCode = $response->getStatusCode();
             if ($statusCode >= 200 && $statusCode < 400) {
-                return;
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return UnrentNumberResponse::fromJson($json);
             }
+        } catch (JsonException $e) {
+            throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
         } catch (ClientExceptionInterface $e) {
             throw new VobizException(message: $e->getMessage(), previous: $e);
         }
@@ -175,8 +183,8 @@ class PhoneNumbersClient
     /**
      * Cancel a pending number release during the 24-hour cooldown. The number is
      * restored to `active`, the cooldown timer is cleared, and the release fee is
-     * refunded. Any trunk or voice application detached by the release is not
-     * re-attached automatically.
+     * refunded in full to the account balance. Any trunk or voice application
+     * detached by the release is not re-attached automatically.
      *
      * @param string $accountId Your account Auth ID.
      * @param string $e164 The URL-encoded phone number in E.164 format. Encode `+` as `%2B`.
