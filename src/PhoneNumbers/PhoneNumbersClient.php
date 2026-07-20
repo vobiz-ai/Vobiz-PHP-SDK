@@ -13,6 +13,8 @@ use Vobiz\Environments;
 use Vobiz\Core\Client\HttpMethod;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
+use Vobiz\PhoneNumbers\Requests\UnrentNumberRequest;
+use Vobiz\PhoneNumbers\Types\CancelNumberReleaseResponse;
 use Vobiz\PhoneNumbers\Requests\ListInventoryNumbersRequest;
 use Vobiz\PhoneNumbers\Types\ListInventoryNumbersResponse;
 use Vobiz\PhoneNumbers\Requests\PurchaseFromInventoryRequest;
@@ -120,10 +122,14 @@ class PhoneNumbersClient
     }
 
     /**
-     * Release a phone number from your account.
+     * Release a phone number from your account. By default, the number enters
+     * `pending_release` for a 24-hour cooldown. You can cancel the release during
+     * that window. Set `immediate=true` to skip the cooldown; an immediate release
+     * cannot be cancelled.
      *
      * @param string $authId Your account Auth ID
      * @param string $e164 Phone number in E.164 format (without the +)
+     * @param UnrentNumberRequest $request
      * @param ?array{
      *   baseUrl?: string,
      *   maxRetries?: int,
@@ -135,15 +141,20 @@ class PhoneNumbersClient
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function unrentNumber(string $authId, string $e164, ?array $options = null): void
+    public function unrentNumber(string $authId, string $e164, UnrentNumberRequest $request = new UnrentNumberRequest(), ?array $options = null): void
     {
         $options = array_merge($this->options, $options ?? []);
+        $query = [];
+        if ($request->immediate != null) {
+            $query['immediate'] = $request->immediate;
+        }
         try {
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Production->value,
                     path: "api/v1/Account/{$authId}/numbers/{$e164}",
                     method: HttpMethod::DELETE,
+                    query: $query,
                 ),
                 $options,
             );
@@ -151,6 +162,58 @@ class PhoneNumbersClient
             if ($statusCode >= 200 && $statusCode < 400) {
                 return;
             }
+        } catch (ClientExceptionInterface $e) {
+            throw new VobizException(message: $e->getMessage(), previous: $e);
+        }
+        throw new VobizApiException(
+            message: 'API request failed',
+            statusCode: $statusCode,
+            body: $response->getBody()->getContents(),
+        );
+    }
+
+    /**
+     * Cancel a pending number release during the 24-hour cooldown. The number is
+     * restored to `active`, the cooldown timer is cleared, and the release fee is
+     * refunded. Any trunk or voice application detached by the release is not
+     * re-attached automatically.
+     *
+     * @param string $accountId Your account Auth ID.
+     * @param string $e164 The URL-encoded phone number in E.164 format. Encode `+` as `%2B`.
+     * @param ?array{
+     *   baseUrl?: string,
+     *   maxRetries?: int,
+     *   timeout?: float,
+     *   headers?: array<string, string>,
+     *   queryParameters?: array<string, mixed>,
+     *   bodyProperties?: array<string, mixed>,
+     * } $options
+     * @return ?CancelNumberReleaseResponse
+     * @throws VobizException
+     * @throws VobizApiException
+     */
+    public function cancelNumberRelease(string $accountId, string $e164, ?array $options = null): ?CancelNumberReleaseResponse
+    {
+        $options = array_merge($this->options, $options ?? []);
+        try {
+            $response = $this->client->sendRequest(
+                new JsonApiRequest(
+                    baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Production->value,
+                    path: "api/v1/account/{$accountId}/numbers/{$e164}/cancel-release",
+                    method: HttpMethod::POST,
+                ),
+                $options,
+            );
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 200 && $statusCode < 400) {
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return CancelNumberReleaseResponse::fromJson($json);
+            }
+        } catch (JsonException $e) {
+            throw new VobizException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
         } catch (ClientExceptionInterface $e) {
             throw new VobizException(message: $e->getMessage(), previous: $e);
         }

@@ -3113,7 +3113,7 @@ $client->phoneNumbers->listNumbers(
 </dl>
 </details>
 
-<details><summary><code>$client-&gt;phoneNumbers-&gt;unrentNumber($authId, $e164)</code></summary>
+<details><summary><code>$client-&gt;phoneNumbers-&gt;unrentNumber($authId, $e164, $request)</code></summary>
 <dl>
 <dd>
 
@@ -3125,7 +3125,10 @@ $client->phoneNumbers->listNumbers(
 <dl>
 <dd>
 
-Release a phone number from your account.
+Release a phone number from your account. By default, the number enters
+`pending_release` for a 24-hour cooldown. You can cancel the release during
+that window. Set `immediate=true` to skip the cooldown; an immediate release
+cannot be cancelled.
 </dd>
 </dl>
 </dd>
@@ -3143,6 +3146,7 @@ Release a phone number from your account.
 $client->phoneNumbers->unrentNumber(
     'MA_XXXXXX',
     '919876543210',
+    new UnrentNumberRequest([]),
 );
 ```
 </dd>
@@ -3167,6 +3171,82 @@ $client->phoneNumbers->unrentNumber(
 <dd>
 
 **$e164:** `string` — Phone number in E.164 format (without the +)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$immediate:** `?bool` — Skip the 24-hour cooldown and release the number immediately.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>$client-&gt;phoneNumbers-&gt;cancelNumberRelease($accountId, $e164) -> ?CancelNumberReleaseResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Cancel a pending number release during the 24-hour cooldown. The number is
+restored to `active`, the cooldown timer is cleared, and the release fee is
+refunded. Any trunk or voice application detached by the release is not
+re-attached automatically.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```php
+$client->phoneNumbers->cancelNumberRelease(
+    'MA_XXXXXX',
+    '%2B919876543210',
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**$accountId:** `string` — Your account Auth ID.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$e164:** `string` — The URL-encoded phone number in E.164 format. Encode `+` as `%2B`.
     
 </dd>
 </dl>

@@ -44,7 +44,8 @@ use Vobiz\Types\CapacityResourceType;
 $client = new VobizClient(
     authId: '<X-Auth-ID>',
     authToken: '<X-Auth-Token>',
-    token: '<token>',
+    username: '<username>',
+    password: '<password>',
 );
 $client->account->createChannelSubscription(
     'MA_XXXX',

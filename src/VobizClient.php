@@ -180,7 +180,8 @@ class VobizClient
     private RawClient $client;
 
     /**
-     * @param string $token The token to use for authentication.
+     * @param string $username The username to use for authentication.
+     * @param string $password The password to use for authentication.
      * @param string $authId
      * @param string $authToken
      * @param ?array{
@@ -192,18 +193,19 @@ class VobizClient
      * } $options
      */
     public function __construct(
-        string $token,
+        string $username,
+        string $password,
         string $authId,
         string $authToken,
         ?array $options = null,
     ) {
         $defaultHeaders = [
-            'Authorization' => "Bearer $token",
             'X-Auth-ID' => $authId,
             'X-Auth-Token' => $authToken,
             'X-Fern-Language' => 'PHP',
             'X-Fern-SDK-Name' => 'Vobiz',
         ];
+        $defaultHeaders['Authorization'] = "Basic " . base64_encode($username . ":" . $password);
 
         $this->options = $options ?? [];
 
