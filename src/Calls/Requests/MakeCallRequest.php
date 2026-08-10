@@ -14,6 +14,10 @@ class MakeCallRequest extends JsonSerializableType
     public string $from;
 
     /**
+     * Destination PSTN number or SIP endpoint. Separate multiple destinations with
+     * the `<` character to fan out a single request to up to 1000 destinations,
+     * for example `+919876543210<+919876543211`.
+     *
      * @var string $to
      */
     #[JsonProperty('to')]

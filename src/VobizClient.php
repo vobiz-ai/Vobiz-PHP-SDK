@@ -22,6 +22,7 @@ use Vobiz\Conferences\ConferencesClient;
 use Vobiz\ConferenceMembers\ConferenceMembersClient;
 use Vobiz\ConferenceRecording\ConferenceRecordingClient;
 use Vobiz\Recordings\RecordingsClient;
+use Vobiz\BulkOperations\BulkOperationsClient;
 use Vobiz\Credentials\CredentialsClient;
 use Vobiz\IpAccessControlList\IpAccessControlListClient;
 use Vobiz\OriginationUri\OriginationUriClient;
@@ -134,6 +135,11 @@ class VobizClient
     public RecordingsClient $recordings;
 
     /**
+     * @var BulkOperationsClient $bulkOperations
+     */
+    public BulkOperationsClient $bulkOperations;
+
+    /**
      * @var CredentialsClient $credentials
      */
     public CredentialsClient $credentials;
@@ -236,6 +242,7 @@ class VobizClient
         $this->conferenceMembers = new ConferenceMembersClient($this->client, $this->options);
         $this->conferenceRecording = new ConferenceRecordingClient($this->client, $this->options);
         $this->recordings = new RecordingsClient($this->client, $this->options);
+        $this->bulkOperations = new BulkOperationsClient($this->client, $this->options);
         $this->credentials = new CredentialsClient($this->client, $this->options);
         $this->ipAccessControlList = new IpAccessControlListClient($this->client, $this->options);
         $this->originationUri = new OriginationUriClient($this->client, $this->options);

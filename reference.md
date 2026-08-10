@@ -807,6 +807,10 @@ $client->calls->makeCall(
 <dd>
 
 **$to:** `string` 
+
+Destination PSTN number or SIP endpoint. Separate multiple destinations with
+the `<` character to fan out a single request to up to 1000 destinations,
+for example `+919876543210<+919876543211`.
     
 </dd>
 </dl>
@@ -3125,10 +3129,12 @@ $client->phoneNumbers->listNumbers(
 <dl>
 <dd>
 
-Release a phone number from your account. By default, the number enters
-`pending_release` for a 24-hour cooldown. You can cancel the release during
-that window. Set `immediate=true` to skip the cooldown; an immediate release
-cannot be cancelled.
+Release a phone number from your account. Releasing a number incurs the
+number-release fee configured for the account; the response returns the
+charged amount in `release_fee`. By default, the number enters
+`pending_release` for a 24-hour cooldown. Cancelling during that window
+refunds the release fee. Set `immediate=true` to skip the cooldown; an
+immediate release cannot be cancelled.
 </dd>
 </dl>
 </dd>
@@ -6617,6 +6623,201 @@ $client->recordings->deleteRecording(
 <dd>
 
 **$recordingId:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Bulk Operations
+<details><summary><code>$client-&gt;bulkOperations-&gt;bulkExportRecordings($authId, $request) -> ?BulkExportRecordingsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Queue a bulk export of the recordings matching your filter criteria. The request is
+validated and accepted for background processing, and the resulting archive is emailed
+as a download link to every address in `recipient.customer_account`. The archive is
+typically available within 15-60 minutes depending on volume.
+
+Results are delivered by email only; the export runs to completion in the background
+after the `202` response.
+
+One export runs at a time per account. While an export is in progress, further requests
+return `403`.
+
+Filter rules:
+- Use either `from`/`to` or the `recording_storage_duration*` filters, not both.
+- Use one of `__gt` or `__gte`, and one of `__lt` or `__lte`.
+- When using range filters (`__gte`/`__lte`), provide both.
+- Maximum date range is 1 year (366 days); maximum storage duration range is 30 days.
+- The additional filters (`from_number`, `to_number`, `call_uuid`, `conference_name`,
+  `recording_format`, `recording_id`) apply when the range is 30 days or less.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```php
+$client->bulkOperations->bulkExportRecordings(
+    'MA_XXXXXX',
+    new BulkExportRecordingsRequest([
+        'recipient' => new BulkExportRecordingsRequestRecipient([
+            'customerAccount' => [
+                'admin@example.com',
+            ],
+        ]),
+        'from' => '2025-01-23 00:00:00',
+        'to' => '2025-01-30 23:59:59',
+    ]),
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**$authId:** `string` — Your account Auth ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recipient:** `BulkExportRecordingsRequestRecipient` — Email delivery targets for the export archive.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$from:** `?string` — Start date for the export. Format: YYYY-MM-DD HH:MM:SS. Defaults to 7 days ago.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$to:** `?string` — End date for the export. Format: YYYY-MM-DD HH:MM:SS. Defaults to the current time.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingStorageDuration:** `?string` — Export recordings exactly N days old. `"7"` exports recordings from exactly 7 days ago.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingStorageDurationGte:** `?string` — Export recordings N days old or older. `"7"` exports recordings 7 days old and older.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingStorageDurationGt:** `?string` — Export recordings older than N days. `"7"` exports recordings 8 days old and older.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingStorageDurationLte:** `?string` — Export recordings N days old or newer. `"30"` exports recordings 0-30 days old.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingStorageDurationLt:** `?string` — Export recordings newer than N days. `"30"` exports recordings 0-29 days old.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$fromNumber:** `?string` — Filter by caller phone number. Applies when the range is 30 days or less.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$toNumber:** `?string` — Filter by destination phone number. Applies when the range is 30 days or less.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$callUuid:** `?string` — Filter by call UUID. Also use this field for a conference_uuid or mpc_uuid. Applies when the range is 30 days or less.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$conferenceName:** `?string` — Filter by conference name. Also use this field for an mpc_name. Applies when the range is 30 days or less.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingFormat:** `?string` — Filter by recording format. Applies when the range is 30 days or less.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$recordingId:** `?string` — Filter by a specific recording ID. Applies when the range is 30 days or less.
     
 </dd>
 </dl>

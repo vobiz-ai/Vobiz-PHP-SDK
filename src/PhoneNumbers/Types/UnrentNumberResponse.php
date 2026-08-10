@@ -34,7 +34,7 @@ class UnrentNumberResponse extends JsonSerializableType
     public ?string $note;
 
     /**
-     * @var float $releaseFee
+     * @var float $releaseFee The account-specific fee charged for releasing the number.
      */
     #[JsonProperty('release_fee')]
     public float $releaseFee;
