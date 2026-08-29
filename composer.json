@@ -7,7 +7,7 @@
     "api",
     "sdk"
   ],
-  "license": "MIT",
+  "license": [],
   "require": {
     "php": "^8.1",
     "ext-json": "*",
