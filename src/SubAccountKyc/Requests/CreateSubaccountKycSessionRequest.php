@@ -36,7 +36,7 @@ class CreateSubaccountKycSessionRequest extends JsonSerializableType
     public ?string $redirectUrl;
 
     /**
-     * @var ?string $webhookUrl HTTPS endpoint VoBiz POSTs the KYC result to. Omit it and no callbacks are sent.
+     * @var ?string $webhookUrl HTTPS endpoint Vobiz POSTs the KYC result to. Omit it and no callbacks are sent.
      */
     #[JsonProperty('webhook_url')]
     public ?string $webhookUrl;
