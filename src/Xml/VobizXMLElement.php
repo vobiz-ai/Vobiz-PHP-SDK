@@ -36,7 +36,11 @@ class VobizXMLElement
     /** @var array<int, VobizXMLElement> */
     protected array $children = [];
 
-    /** Ordered attribute map (insertion order preserved). @var array<string, string> */
+    /**
+     * Ordered attribute map (insertion order preserved).
+     *
+     * @var array<string, string>
+     */
     protected array $attributes = [];
 
     /**
@@ -94,7 +98,23 @@ class VobizXMLElement
             return $value ? 'true' : 'false';
         }
 
-        return (string) $value;
+        return self::stringify($value);
+    }
+
+    /**
+     * Cast a scalar or Stringable to string. Anything else is a caller error,
+     * so it is rejected instead of rendering as "Array" or failing deep inside
+     * serialization.
+     */
+    protected static function stringify(mixed $value): string
+    {
+        if (is_scalar($value) || $value instanceof \Stringable) {
+            return (string) $value;
+        }
+
+        throw new \InvalidArgumentException(
+            'Vobiz XML values must be scalars or Stringable, got ' . get_debug_type($value)
+        );
     }
 
     /** Escape XML text content (& < >). */
@@ -151,7 +171,8 @@ class VobizXMLElement
 
         // Text-content element -> single line.
         if (count($this->children) === 0) {
-            $body = $this->raw ? $this->content : self::escape($this->content);
+            $content = $this->content ?? '';
+            $body = $this->raw ? $content : self::escape($content);
 
             return $pad . '<' . $openTag . '>' . $body . '</' . $this->name . '>';
         }
