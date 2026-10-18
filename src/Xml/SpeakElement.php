@@ -21,7 +21,7 @@ class SpeakElement extends VobizXMLElement
         unset($attrs['ssml']);
 
         if ($ssml !== null) {
-            parent::__construct('Speak', self::stringify($ssml), $attrs, true);
+            parent::__construct('Speak', (string) $ssml, $attrs, true);
         } else {
             parent::__construct('Speak', $content, $attrs);
         }

@@ -29,6 +29,7 @@ use Vobiz\OriginationUri\OriginationUriClient;
 use Vobiz\Applications\ApplicationsClient;
 use Vobiz\Endpoints\EndpointsClient;
 use Vobiz\PartnerApi\PartnerApiClient;
+use Vobiz\Sms\SmsClient;
 use Psr\Http\Client\ClientInterface;
 use Vobiz\Core\Client\RawClient;
 
@@ -170,6 +171,11 @@ class VobizClient
     public PartnerApiClient $partnerApi;
 
     /**
+     * @var SmsClient $sms
+     */
+    public SmsClient $sms;
+
+    /**
      * @var array{
      *   baseUrl?: string,
      *   client?: ClientInterface,
@@ -186,8 +192,7 @@ class VobizClient
     private RawClient $client;
 
     /**
-     * @param string $token The token to use for authentication.
-     * @param string $authId
+     * @param string $apiKey The apiKey to use for authentication.
      * @param string $authToken
      * @param ?array{
      *   baseUrl?: string,
@@ -198,14 +203,12 @@ class VobizClient
      * } $options
      */
     public function __construct(
-        string $token,
-        string $authId,
+        string $apiKey,
         string $authToken,
         ?array $options = null,
     ) {
         $defaultHeaders = [
-            'Authorization' => "Bearer $token",
-            'X-Auth-ID' => $authId,
+            'X-Auth-ID' => $apiKey,
             'X-Auth-Token' => $authToken,
             'X-Fern-Language' => 'PHP',
             'X-Fern-SDK-Name' => 'Vobiz',
@@ -249,5 +252,6 @@ class VobizClient
         $this->applications = new ApplicationsClient($this->client, $this->options);
         $this->endpoints = new EndpointsClient($this->client, $this->options);
         $this->partnerApi = new PartnerApiClient($this->client, $this->options);
+        $this->sms = new SmsClient($this->client, $this->options);
     }
 }

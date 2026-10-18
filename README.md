@@ -42,9 +42,8 @@ use Vobiz\Account\Requests\ChannelSubscriptionRequest;
 use Vobiz\Types\CapacityResourceType;
 
 $client = new VobizClient(
-    authId: '<X-Auth-ID>',
     authToken: '<X-Auth-Token>',
-    token: '<token>',
+    apiKey: '<value>',
 );
 $client->account->createChannelSubscription(
     'MA_XXXX',
