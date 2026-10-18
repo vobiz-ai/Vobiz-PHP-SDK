@@ -41,7 +41,7 @@ class CreateKycSessionRequest extends JsonSerializableType
     public ?string $redirectUrl;
 
     /**
-     * @var ?string $webhookUrl VoBiz POSTs the KYC result here.
+     * @var ?string $webhookUrl Vobiz POSTs the KYC result here.
      */
     #[JsonProperty('webhook_url')]
     public ?string $webhookUrl;
