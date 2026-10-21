@@ -1,49 +1,52 @@
 <?php
 
-namespace Vobiz\Endpoints\Types;
+namespace Vobiz\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
 
-class ListEndpointsResponseMeta extends JsonSerializableType
+/**
+ * Offset-based pagination metadata returned in the `meta` object of the Application, Endpoint and Recording list endpoints. To fetch the next page, add `limit` to `offset`, or request the `next` URL as-is.
+ */
+class PaginationMeta extends JsonSerializableType
 {
     /**
-     * @var int $limit
+     * @var int $limit Maximum number of items in `objects` for this request, as set by the `limit` query parameter (default 20).
      */
     #[JsonProperty('limit')]
     public int $limit;
 
     /**
-     * @var int $offset
+     * @var int $offset Zero-based position of the first item in `objects`, as set by the `offset` query parameter.
      */
     #[JsonProperty('offset')]
     public int $offset;
 
     /**
-     * @var int $totalCount
+     * @var int $totalCount Total number of items that match the request across all pages.
      */
     #[JsonProperty('total_count')]
     public int $totalCount;
 
     /**
-     * @var mixed $next
+     * @var ?string $next Relative URL of the next page with `limit` and `offset` already set, or `null` on the last page.
      */
     #[JsonProperty('next')]
-    public mixed $next;
+    public ?string $next;
 
     /**
-     * @var mixed $previous
+     * @var ?string $previous Relative URL of the previous page, or `null` on the first page.
      */
     #[JsonProperty('previous')]
-    public mixed $previous;
+    public ?string $previous;
 
     /**
      * @param array{
      *   limit: int,
      *   offset: int,
      *   totalCount: int,
-     *   next?: mixed,
-     *   previous?: mixed,
+     *   next?: ?string,
+     *   previous?: ?string,
      * } $values
      */
     public function __construct(

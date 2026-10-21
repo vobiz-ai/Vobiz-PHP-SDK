@@ -3,16 +3,17 @@
 namespace Vobiz\OriginationUri\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
+use Vobiz\Types\TrunkListMeta;
 use Vobiz\Core\Json\JsonProperty;
 use Vobiz\Core\Types\ArrayType;
 
 class ListOriginationUrisResponse extends JsonSerializableType
 {
     /**
-     * @var ListOriginationUrisResponseMeta $meta
+     * @var TrunkListMeta $meta
      */
     #[JsonProperty('meta')]
-    public ListOriginationUrisResponseMeta $meta;
+    public TrunkListMeta $meta;
 
     /**
      * @var array<ListOriginationUrisResponseObjectsItem> $objects
@@ -22,7 +23,7 @@ class ListOriginationUrisResponse extends JsonSerializableType
 
     /**
      * @param array{
-     *   meta: ListOriginationUrisResponseMeta,
+     *   meta: TrunkListMeta,
      *   objects: array<ListOriginationUrisResponseObjectsItem>,
      * } $values
      */

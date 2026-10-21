@@ -5,6 +5,7 @@ namespace Vobiz\PartnerApi\Types;
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
 use Vobiz\Core\Types\ArrayType;
+use Vobiz\Types\CdrPagination;
 
 class ListCustomerCdrsResponse extends JsonSerializableType
 {
@@ -27,10 +28,10 @@ class ListCustomerCdrsResponse extends JsonSerializableType
     public array $data;
 
     /**
-     * @var ListCustomerCdrsResponsePagination $pagination
+     * @var CdrPagination $pagination
      */
     #[JsonProperty('pagination')]
-    public ListCustomerCdrsResponsePagination $pagination;
+    public CdrPagination $pagination;
 
     /**
      * @var bool $success
@@ -55,7 +56,7 @@ class ListCustomerCdrsResponse extends JsonSerializableType
      *   accountId: string,
      *   count: int,
      *   data: array<mixed>,
-     *   pagination: ListCustomerCdrsResponsePagination,
+     *   pagination: CdrPagination,
      *   success: bool,
      *   summary: ListCustomerCdrsResponseSummary,
      *   accountAuthId: string,

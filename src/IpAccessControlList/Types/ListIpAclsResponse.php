@@ -3,16 +3,17 @@
 namespace Vobiz\IpAccessControlList\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
+use Vobiz\Types\TrunkListMeta;
 use Vobiz\Core\Json\JsonProperty;
 use Vobiz\Core\Types\ArrayType;
 
 class ListIpAclsResponse extends JsonSerializableType
 {
     /**
-     * @var ListIpAclsResponseMeta $meta
+     * @var TrunkListMeta $meta
      */
     #[JsonProperty('meta')]
-    public ListIpAclsResponseMeta $meta;
+    public TrunkListMeta $meta;
 
     /**
      * @var array<ListIpAclsResponseObjectsItem> $objects
@@ -22,7 +23,7 @@ class ListIpAclsResponse extends JsonSerializableType
 
     /**
      * @param array{
-     *   meta: ListIpAclsResponseMeta,
+     *   meta: TrunkListMeta,
      *   objects: array<ListIpAclsResponseObjectsItem>,
      * } $values
      */

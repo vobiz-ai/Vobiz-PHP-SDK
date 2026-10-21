@@ -5,6 +5,7 @@ namespace Vobiz\Cdr\Types;
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
 use Vobiz\Core\Types\ArrayType;
+use Vobiz\Types\CdrPagination;
 
 class SearchCdrsResponse extends JsonSerializableType
 {
@@ -33,10 +34,10 @@ class SearchCdrsResponse extends JsonSerializableType
     public SearchCdrsResponseFilters $filters;
 
     /**
-     * @var SearchCdrsResponsePagination $pagination
+     * @var CdrPagination $pagination
      */
     #[JsonProperty('pagination')]
-    public SearchCdrsResponsePagination $pagination;
+    public CdrPagination $pagination;
 
     /**
      * @var bool $success
@@ -56,7 +57,7 @@ class SearchCdrsResponse extends JsonSerializableType
      *   count: int,
      *   data: array<SearchCdrsResponseDataItem>,
      *   filters: SearchCdrsResponseFilters,
-     *   pagination: SearchCdrsResponsePagination,
+     *   pagination: CdrPagination,
      *   success: bool,
      *   summary: SearchCdrsResponseSummary,
      * } $values

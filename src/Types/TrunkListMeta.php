@@ -1,26 +1,29 @@
 <?php
 
-namespace Vobiz\IpAccessControlList\Types;
+namespace Vobiz\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
 
-class ListIpAclsResponseMeta extends JsonSerializableType
+/**
+ * Pagination metadata returned in the `meta` object of the trunk, credential, IP ACL and origination URI list endpoints.
+ */
+class TrunkListMeta extends JsonSerializableType
 {
     /**
-     * @var int $limit
+     * @var int $limit Maximum number of items in `objects` for this response.
      */
     #[JsonProperty('limit')]
     public int $limit;
 
     /**
-     * @var int $offset
+     * @var int $offset Zero-based position of the first item in `objects`.
      */
     #[JsonProperty('offset')]
     public int $offset;
 
     /**
-     * @var int $total
+     * @var int $total Total number of items on the account.
      */
     #[JsonProperty('total')]
     public int $total;

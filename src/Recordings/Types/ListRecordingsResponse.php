@@ -4,6 +4,7 @@ namespace Vobiz\Recordings\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
+use Vobiz\Types\PaginationMeta;
 use Vobiz\Core\Types\ArrayType;
 
 class ListRecordingsResponse extends JsonSerializableType
@@ -15,10 +16,10 @@ class ListRecordingsResponse extends JsonSerializableType
     public string $apiId;
 
     /**
-     * @var ListRecordingsResponseMeta $meta
+     * @var PaginationMeta $meta
      */
     #[JsonProperty('meta')]
-    public ListRecordingsResponseMeta $meta;
+    public PaginationMeta $meta;
 
     /**
      * @var array<ListRecordingsResponseObjectsItem> $objects
@@ -29,7 +30,7 @@ class ListRecordingsResponse extends JsonSerializableType
     /**
      * @param array{
      *   apiId: string,
-     *   meta: ListRecordingsResponseMeta,
+     *   meta: PaginationMeta,
      *   objects: array<ListRecordingsResponseObjectsItem>,
      * } $values
      */

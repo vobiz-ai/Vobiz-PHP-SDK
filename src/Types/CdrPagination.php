@@ -1,44 +1,47 @@
 <?php
 
-namespace Vobiz\PartnerApi\Types;
+namespace Vobiz\Types;
 
 use Vobiz\Core\Json\JsonSerializableType;
 use Vobiz\Core\Json\JsonProperty;
 
-class ListCustomerCdrsResponsePagination extends JsonSerializableType
+/**
+ * Page-based pagination returned in the `pagination` object of the CDR list and search endpoints and the partner customer CDR endpoint. Loop while `has_next` is `true`, incrementing `page`.
+ */
+class CdrPagination extends JsonSerializableType
 {
     /**
-     * @var int $page
+     * @var int $page Current page number, starting at 1.
      */
     #[JsonProperty('page')]
     public int $page;
 
     /**
-     * @var int $perPage
+     * @var int $perPage Number of records per page, as set by the `per_page` query parameter.
      */
     #[JsonProperty('per_page')]
     public int $perPage;
 
     /**
-     * @var int $total
+     * @var int $total Total number of records that match the filters across all pages.
      */
     #[JsonProperty('total')]
     public int $total;
 
     /**
-     * @var int $pages
+     * @var int $pages Total number of pages, `ceil(total / per_page)`.
      */
     #[JsonProperty('pages')]
     public int $pages;
 
     /**
-     * @var bool $hasNext
+     * @var bool $hasNext `true` when a page after this one exists.
      */
     #[JsonProperty('has_next')]
     public bool $hasNext;
 
     /**
-     * @var bool $hasPrev
+     * @var bool $hasPrev `true` when a page before this one exists.
      */
     #[JsonProperty('has_prev')]
     public bool $hasPrev;
