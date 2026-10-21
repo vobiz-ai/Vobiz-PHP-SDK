@@ -3734,6 +3734,155 @@ $client->phoneNumbers->unassignNumberFromTrunk(
 </dl>
 </details>
 
+<details><summary><code>$client-&gt;phoneNumbers-&gt;linkNumberToApplication($authId, $e164, $request)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Link a phone number to a voice application. Once linked, inbound
+calls to that number fetch VobizXML from the application's
+`answer_url`. A number routes through either an application or a
+SIP trunk, not both: unassign the number from its trunk first
+(`DELETE /api/v1/Account/{auth_id}/numbers/{phone_number}/assign`).
+URL-encode the phone number (use `%2B` instead of `+`).
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```php
+$client->phoneNumbers->linkNumberToApplication(
+    'MA_XXXXXX',
+    '%2B912271264217',
+    new LinkNumberToApplicationRequest([
+        'applicationId' => '12345678901234567',
+    ]),
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**$authId:** `string` — Your account Auth ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$e164:** `string` — The phone number, URL-encoded (use %2B instead of +).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$applicationId:** `string` — The `app_id` of the application to link this number to.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>$client-&gt;phoneNumbers-&gt;unlinkNumberFromApplication($authId, $e164)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Remove the link between a phone number and its voice application.
+The number stays in your account inventory but inbound calls no
+longer fetch VobizXML from that application.
+URL-encode the phone number (use `%2B` instead of `+`).
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```php
+$client->phoneNumbers->unlinkNumberFromApplication(
+    'MA_XXXXXX',
+    '%2B912271264217',
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**$authId:** `string` — Your account Auth ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$e164:** `string` — The phone number, URL-encoded (use %2B instead of +).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>$client-&gt;phoneNumbers-&gt;getNumberHealth($authId, $e164, $request) -> ?GetNumberHealthResponse</code></summary>
 <dl>
 <dd>
@@ -7930,6 +8079,8 @@ $client->applications->createApplication(
         'appName' => 'My Voice Application',
         'answerUrl' => 'https://example.com/answer',
         'answerMethod' => 'POST',
+        'hangupUrl' => 'https://example.com/hangup',
+        'hangupMethod' => 'POST',
     ]),
 );
 ```
@@ -7971,6 +8122,22 @@ $client->applications->createApplication(
 <dd>
 
 **$answerMethod:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$hangupUrl:** `?string` — URL Vobiz notifies when a call on this application ends. If omitted, it defaults to `answer_url`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$hangupMethod:** `?string` — HTTP method used for `hangup_url`, `GET` or `POST`.
     
 </dd>
 </dl>
@@ -8081,6 +8248,10 @@ $client->applications->updateApplication(
     new UpdateApplicationRequest([
         'appName' => 'Updated Application Name',
         'defaultNumberApp' => true,
+        'answerUrl' => 'https://example.com/answer',
+        'answerMethod' => 'POST',
+        'hangupUrl' => 'https://example.com/hangup',
+        'hangupMethod' => 'POST',
     ]),
 );
 ```
@@ -8122,6 +8293,38 @@ $client->applications->updateApplication(
 <dd>
 
 **$defaultNumberApp:** `bool` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$answerUrl:** `?string` — URL Vobiz fetches VobizXML from when a call reaches a number or endpoint linked to this application.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$answerMethod:** `?string` — HTTP method used for `answer_url`, `GET` or `POST`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$hangupUrl:** `?string` — URL Vobiz notifies when a call on this application ends.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**$hangupMethod:** `?string` — HTTP method used for `hangup_url`, `GET` or `POST`.
     
 </dd>
 </dl>

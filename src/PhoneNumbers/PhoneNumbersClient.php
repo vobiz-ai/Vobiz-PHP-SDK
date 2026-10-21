@@ -21,6 +21,7 @@ use Vobiz\PhoneNumbers\Types\ListInventoryNumbersResponse;
 use Vobiz\PhoneNumbers\Requests\PurchaseFromInventoryRequest;
 use Vobiz\Core\Json\JsonDecoder;
 use Vobiz\PhoneNumbers\Requests\AssignNumberToTrunkRequest;
+use Vobiz\PhoneNumbers\Requests\LinkNumberToApplicationRequest;
 use Vobiz\PhoneNumbers\Requests\GetNumberHealthRequest;
 use Vobiz\PhoneNumbers\Types\GetNumberHealthResponse;
 use Vobiz\PhoneNumbers\Requests\AssignDidToSubaccountRequest;
@@ -428,6 +429,100 @@ class PhoneNumbersClient
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Production->value,
                     path: "api/v1/Account/{$authId}/numbers/{$phoneNumber}/assign",
+                    method: HttpMethod::DELETE,
+                ),
+                $options,
+            );
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 200 && $statusCode < 400) {
+                return;
+            }
+        } catch (ClientExceptionInterface $e) {
+            throw new VobizException(message: $e->getMessage(), previous: $e);
+        }
+        throw new VobizApiException(
+            message: 'API request failed',
+            statusCode: $statusCode,
+            body: $response->getBody()->getContents(),
+        );
+    }
+
+    /**
+     * Link a phone number to a voice application. Once linked, inbound
+     * calls to that number fetch VobizXML from the application's
+     * `answer_url`. A number routes through either an application or a
+     * SIP trunk, not both: unassign the number from its trunk first
+     * (`DELETE /api/v1/Account/{auth_id}/numbers/{phone_number}/assign`).
+     * URL-encode the phone number (use `%2B` instead of `+`).
+     *
+     * @param string $authId Your account Auth ID
+     * @param string $e164 The phone number, URL-encoded (use %2B instead of +).
+     * @param LinkNumberToApplicationRequest $request
+     * @param ?array{
+     *   baseUrl?: string,
+     *   maxRetries?: int,
+     *   timeout?: float,
+     *   headers?: array<string, string>,
+     *   queryParameters?: array<string, mixed>,
+     *   bodyProperties?: array<string, mixed>,
+     * } $options
+     * @throws VobizException
+     * @throws VobizApiException
+     */
+    public function linkNumberToApplication(string $authId, string $e164, LinkNumberToApplicationRequest $request, ?array $options = null): void
+    {
+        $options = array_merge($this->options, $options ?? []);
+        try {
+            $response = $this->client->sendRequest(
+                new JsonApiRequest(
+                    baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Production->value,
+                    path: "api/v1/Account/{$authId}/numbers/{$e164}/application",
+                    method: HttpMethod::POST,
+                    body: $request,
+                ),
+                $options,
+            );
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 200 && $statusCode < 400) {
+                return;
+            }
+        } catch (ClientExceptionInterface $e) {
+            throw new VobizException(message: $e->getMessage(), previous: $e);
+        }
+        throw new VobizApiException(
+            message: 'API request failed',
+            statusCode: $statusCode,
+            body: $response->getBody()->getContents(),
+        );
+    }
+
+    /**
+     * Remove the link between a phone number and its voice application.
+     * The number stays in your account inventory but inbound calls no
+     * longer fetch VobizXML from that application.
+     * URL-encode the phone number (use `%2B` instead of `+`).
+     *
+     * @param string $authId Your account Auth ID
+     * @param string $e164 The phone number, URL-encoded (use %2B instead of +).
+     * @param ?array{
+     *   baseUrl?: string,
+     *   maxRetries?: int,
+     *   timeout?: float,
+     *   headers?: array<string, string>,
+     *   queryParameters?: array<string, mixed>,
+     *   bodyProperties?: array<string, mixed>,
+     * } $options
+     * @throws VobizException
+     * @throws VobizApiException
+     */
+    public function unlinkNumberFromApplication(string $authId, string $e164, ?array $options = null): void
+    {
+        $options = array_merge($this->options, $options ?? []);
+        try {
+            $response = $this->client->sendRequest(
+                new JsonApiRequest(
+                    baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Production->value,
+                    path: "api/v1/Account/{$authId}/numbers/{$e164}/application",
                     method: HttpMethod::DELETE,
                 ),
                 $options,

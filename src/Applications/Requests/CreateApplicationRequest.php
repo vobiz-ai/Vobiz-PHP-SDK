@@ -26,10 +26,24 @@ class CreateApplicationRequest extends JsonSerializableType
     public string $answerMethod;
 
     /**
+     * @var ?string $hangupUrl URL Vobiz notifies when a call on this application ends. If omitted, it defaults to `answer_url`.
+     */
+    #[JsonProperty('hangup_url')]
+    public ?string $hangupUrl;
+
+    /**
+     * @var ?string $hangupMethod HTTP method used for `hangup_url`, `GET` or `POST`.
+     */
+    #[JsonProperty('hangup_method')]
+    public ?string $hangupMethod;
+
+    /**
      * @param array{
      *   appName: string,
      *   answerUrl: string,
      *   answerMethod: string,
+     *   hangupUrl?: ?string,
+     *   hangupMethod?: ?string,
      * } $values
      */
     public function __construct(
@@ -38,5 +52,7 @@ class CreateApplicationRequest extends JsonSerializableType
         $this->appName = $values['appName'];
         $this->answerUrl = $values['answerUrl'];
         $this->answerMethod = $values['answerMethod'];
+        $this->hangupUrl = $values['hangupUrl'] ?? null;
+        $this->hangupMethod = $values['hangupMethod'] ?? null;
     }
 }
