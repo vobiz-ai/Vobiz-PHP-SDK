@@ -15,7 +15,13 @@ class UpdateSubaccountRequest extends JsonSerializableType
     public ?string $name;
 
     /**
-     * @var ?bool $enabled
+     * @var ?bool $isActive Set to `false` to deactivate the sub-account. A deactivated sub-account no longer appears in list, retrieve, update or delete requests (`404`).
+     */
+    #[JsonProperty('is_active')]
+    public ?bool $isActive;
+
+    /**
+     * @var ?bool $enabled Accepted but has no effect. Use `is_active` instead.
      */
     #[JsonProperty('enabled')]
     public ?bool $enabled;
@@ -29,6 +35,7 @@ class UpdateSubaccountRequest extends JsonSerializableType
     /**
      * @param array{
      *   name?: ?string,
+     *   isActive?: ?bool,
      *   enabled?: ?bool,
      *   kycMode?: ?value-of<UpdateSubaccountRequestKycMode>,
      * } $values
@@ -37,6 +44,7 @@ class UpdateSubaccountRequest extends JsonSerializableType
         array $values = [],
     ) {
         $this->name = $values['name'] ?? null;
+        $this->isActive = $values['isActive'] ?? null;
         $this->enabled = $values['enabled'] ?? null;
         $this->kycMode = $values['kycMode'] ?? null;
     }

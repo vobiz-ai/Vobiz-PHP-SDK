@@ -24,7 +24,7 @@ class UpdateTrunkRequest extends JsonSerializableType
     public ?string $trunkDirection;
 
     /**
-     * @var ?value-of<UpdateTrunkRequestTrunkStatus> $trunkStatus
+     * @var ?value-of<UpdateTrunkRequestTrunkStatus> $trunkStatus Trunk status to set - `enabled` or `disabled`. Responses report `enabled` as `active` and `disabled` as `suspended`.
      */
     #[JsonProperty('trunk_status')]
     public ?string $trunkStatus;

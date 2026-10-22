@@ -141,6 +141,10 @@ class EndpointsClient
      * through IP phones, softphones, or SIP clients. Each endpoint is
      * assigned a unique SIP URI and endpoint ID.
      *
+     * The API appends digits to the `username` you request (for example,
+     * `acme01` can become `acme0125672327435497`). Configure your SIP client
+     * with the `username` returned in the response.
+     *
      * @param string $authId Your account Auth ID
      * @param CreateEndpointRequest $request
      * @param ?array{

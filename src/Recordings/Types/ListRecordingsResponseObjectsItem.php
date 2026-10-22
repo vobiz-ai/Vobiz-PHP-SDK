@@ -86,7 +86,7 @@ class ListRecordingsResponseObjectsItem extends JsonSerializableType
     public string $recordingType;
 
     /**
-     * @var string $recordingUrl
+     * @var string $recordingUrl Download URL for the audio, on `media.vobiz.ai`. Send the same `X-Auth-ID` and `X-Auth-Token` headers as for API requests; without them the media host returns `401`. The body is WAV (RIFF/WAVE PCM), although the response may carry `Content-Type: audio/mpeg`.
      */
     #[JsonProperty('recording_url')]
     public string $recordingUrl;

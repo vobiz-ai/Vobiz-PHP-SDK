@@ -50,7 +50,7 @@ class WebhookSubscription extends JsonSerializableType
     public ?bool $active;
 
     /**
-     * @var ?DateTime $createdAt When the subscription was created (ISO 8601). Read it from `GET /webhooks/{id}` or `GET /webhooks`.
+     * @var ?DateTime $createdAt When the subscription was created (ISO 8601). The create response can return the zero value `0001-01-01T00:00:00Z`; read the stored time from `GET /webhooks/{id}` or `GET /webhooks`.
      */
     #[JsonProperty('createdAt'), Date(Date::TYPE_DATETIME)]
     public ?DateTime $createdAt;

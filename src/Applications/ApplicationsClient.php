@@ -233,7 +233,7 @@ class ApplicationsClient
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function updateApplication(string $authId, string $appId, UpdateApplicationRequest $request, ?array $options = null): ?UpdateApplicationResponse
+    public function updateApplication(string $authId, string $appId, UpdateApplicationRequest $request = new UpdateApplicationRequest(), ?array $options = null): ?UpdateApplicationResponse
     {
         $options = array_merge($this->options, $options ?? []);
         try {

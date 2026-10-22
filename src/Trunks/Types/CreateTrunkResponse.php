@@ -32,7 +32,7 @@ class CreateTrunkResponse extends JsonSerializableType
     public string $trunkDomain;
 
     /**
-     * @var string $trunkStatus
+     * @var value-of<CreateTrunkResponseTrunkStatus> $trunkStatus Trunk state as reported in responses - `active` or `suspended`. Requests set it with `enabled` (reported as `active`) or `disabled` (reported as `suspended`).
      */
     #[JsonProperty('trunk_status')]
     public string $trunkStatus;
@@ -121,7 +121,7 @@ class CreateTrunkResponse extends JsonSerializableType
      *   accountId: string,
      *   name: string,
      *   trunkDomain: string,
-     *   trunkStatus: string,
+     *   trunkStatus: value-of<CreateTrunkResponseTrunkStatus>,
      *   secure: bool,
      *   trunkDirection: string,
      *   concurrentCallsLimit: int,

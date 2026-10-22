@@ -8,16 +8,16 @@ use Vobiz\Core\Json\JsonProperty;
 class UpdateApplicationRequest extends JsonSerializableType
 {
     /**
-     * @var string $appName
+     * @var ?string $appName
      */
     #[JsonProperty('app_name')]
-    public string $appName;
+    public ?string $appName;
 
     /**
-     * @var bool $defaultNumberApp
+     * @var ?bool $defaultNumberApp
      */
     #[JsonProperty('default_number_app')]
-    public bool $defaultNumberApp;
+    public ?bool $defaultNumberApp;
 
     /**
      * @var ?string $answerUrl URL Vobiz fetches VobizXML from when a call reaches a number or endpoint linked to this application.
@@ -45,8 +45,8 @@ class UpdateApplicationRequest extends JsonSerializableType
 
     /**
      * @param array{
-     *   appName: string,
-     *   defaultNumberApp: bool,
+     *   appName?: ?string,
+     *   defaultNumberApp?: ?bool,
      *   answerUrl?: ?string,
      *   answerMethod?: ?string,
      *   hangupUrl?: ?string,
@@ -54,10 +54,10 @@ class UpdateApplicationRequest extends JsonSerializableType
      * } $values
      */
     public function __construct(
-        array $values,
+        array $values = [],
     ) {
-        $this->appName = $values['appName'];
-        $this->defaultNumberApp = $values['defaultNumberApp'];
+        $this->appName = $values['appName'] ?? null;
+        $this->defaultNumberApp = $values['defaultNumberApp'] ?? null;
         $this->answerUrl = $values['answerUrl'] ?? null;
         $this->answerMethod = $values['answerMethod'] ?? null;
         $this->hangupUrl = $values['hangupUrl'] ?? null;

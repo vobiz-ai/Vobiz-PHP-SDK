@@ -20,9 +20,16 @@ class UpdateEndpointRequest extends JsonSerializableType
     public string $password;
 
     /**
+     * @var ?string $appId ID of the application to attach to this endpoint, as a string.
+     */
+    #[JsonProperty('app_id')]
+    public ?string $appId;
+
+    /**
      * @param array{
      *   alias: string,
      *   password: string,
+     *   appId?: ?string,
      * } $values
      */
     public function __construct(
@@ -30,5 +37,6 @@ class UpdateEndpointRequest extends JsonSerializableType
     ) {
         $this->alias = $values['alias'];
         $this->password = $values['password'];
+        $this->appId = $values['appId'] ?? null;
     }
 }

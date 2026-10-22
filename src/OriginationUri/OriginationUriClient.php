@@ -170,7 +170,7 @@ class OriginationUriClient
      * @throws VobizException
      * @throws VobizApiException
      */
-    public function updateOriginationUri(string $authId, string $uriId, UpdateOriginationUriRequest $request, ?array $options = null): ?UpdateOriginationUriResponse
+    public function updateOriginationUri(string $authId, string $uriId, UpdateOriginationUriRequest $request = new UpdateOriginationUriRequest(), ?array $options = null): ?UpdateOriginationUriResponse
     {
         $options = array_merge($this->options, $options ?? []);
         try {
