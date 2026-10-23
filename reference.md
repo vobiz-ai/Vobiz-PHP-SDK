@@ -9221,7 +9221,7 @@ wallet. Both legs are recorded in each account's ledger. Transfers are
 
 ```php
 $client->partnerApi->partnerTransferBalance(
-    'MA_ZKITB8Z2',
+    'MA_XXXXXXXX',
     new PartnerTransferBalanceRequest([
         'amount' => 500,
         'currency' => 'INR',
@@ -9688,7 +9688,7 @@ companies). No document uploads required.
 ```php
 $client->partnerApi->createKycSession(
     new CreateKycSessionRequest([
-        'accountAuthId' => 'MA_ZKITB8Z2',
+        'accountAuthId' => 'MA_XXXXXXXX',
     ]),
 );
 ```
