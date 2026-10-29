@@ -1,0 +1,4 @@
+# Hand-maintained files that `fern generate` must not overwrite.
+# composer.json requires guzzlehttp/guzzle so a fresh install has a PSR-18 client.
+composer.json
+LICENSE
